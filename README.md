@@ -14,13 +14,13 @@
 <table>
  <tr>
     <td align="center"><a href="https://github.com/Be-HinD"><img src="https://avatars.githubusercontent.com/Be-HinD" width="130px;" alt=""></a></td>
-    <td align="center"><a href="https://github.com/hyun812"><img src="https://avatars.githubusercontent.com/hyun812" width="130px;" alt=""></a></td>
-    <td align="center"><a href="https://github.com/eat-alone"><img src="https://avatars.githubusercontent.com/eat-alone" width="130px;" alt=""></a></td>
+    <td align="center"><a href="https://github.com/syhan7516"><img src="https://avatars.githubusercontent.com/syhan7516" width="130px;" alt=""></a></td>
+    <td align="center"><a href="https://github.com/twoconstant"><img src="https://avatars.githubusercontent.com/twoconstant" width="130px;" alt=""></a></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/Be-HinD"><b>Be-HinD</b></a></td>
-    <td align="center"><a href="https://github.com/hyun812"><b>hyun812</b></a></td>
-    <td align="center"><a href="https://github.com/eat-alone"><b>eat-alone</b></a></td>
+    <td align="center"><a href="https://github.com/syhan7516"><b>syhan7516</b></a></td>
+    <td align="center"><a href="https://github.com/twoconstant"><b>twoconstant</b></a></td>
   </tr>
 </table>
 
