@@ -1,3 +1,5 @@
+# 5. 연관관계 매핑 기초
+
 # 목차
 
 # 객체와 테이블 연관관계 차이
@@ -39,79 +41,80 @@
 }
 ```
 
-- 설명
-    - Member의 경우 멤버변수로 team 객체를 가지고있다. 그렇기 때문에 member.GetTeam()을 통해서 team에 접근이 가능하다.
-    - Team의 경우 멤버변수로 member를 가지고있지 않기 때문에 team을 통해서 member에 접근 할 수 없다.
-    - Member와 Team의 관계 수정도 오로지 Member를 통해서만 이루어진다.
+설명
+
+- Member의 경우 멤버변수로 team 객체를 가지고있다. 그렇기 때문에 member.GetTeam()을 통해서 team에 접근이 가능하다.
+- Team의 경우 멤버변수로 member를 가지고있지 않기 때문에 team을 통해서 member에 접근 할 수 없다.
+- Member와 Team의 관계 수정도 오로지 Member를 통해서만 이루어진다.
 
 # 객체지향 모델링의 장점
 
 - 객체 그래프 탐색 : 복잡한 SQL문을 칠 필요 없이 참조를 통해 자유롭게 다른 엔티티로 이동하여 CRUD 가 가능하다.
-    - 예시(특정 멤버의 팀을 조회하는 경우)
-        - 객체 그래프 탐색을 통한 경우
+- 예시(특정 멤버의 팀을 조회하는 경우)
+    - 객체 그래프 탐색을 통한 경우
+    
+    ```java
+    /조회
+     Member findMember = em.find(Member.class, member.getId()); 
+    //참조를 사용해서 연관관계 조회
+     Team findTeam = findMember.getTeam();
+    ```
+    
+    - sql을 통해서 작업해야하는 경우
+    
+    ```java
+    SELECT Team.*
+    FROM Member
+    JOIN Team ON Member.team_id = Team.id
+    WHERE Member.id = 1;
+    ```
+    
+- 예시 2 객체 그래프 탐색 극대화 사례
+    - 블로그의 경우 작석자, 게시글, 댓글이 있고 엔티티의 연관관계는 아래와 같을 때 특정 게시글에 대한 모든 코멘트를 조회하고 각 코멘트의 저자 정보까지 추출해오는 경우
+    
+    Post → Comment → Author
+    
+    - JPA 그래프 탐색을 활용한경우
+    
+    ```java
+    Post post = entityManager.find(Post.class, postId);
+    System.out.println("Post Title: " + post.getTitle());
+    for(Comment comment : post.getComments()) { // 지연 로딩으로 Comment 조회
+        System.out.println("Comment: " + comment.getText() + ",
+    												Author: " + comment.getAuthor().getName()); // 각 Comment의 Author도 지연 로딩으로 조회
+    }
+    ```
+    
+    - SQL 매퍼 사용시
+    
+    ```sql
+    <mapper namespace="com.example.mapper.PostMapper">
+        <select id="selectPostWithComments" resultMap="PostCommentMap">
+            SELECT p.id as post_id, p.title, p.content, 
+                   c.id as comment_id, c.text, 
+                   a.id as author_id, a.name
+            FROM Post p
+            LEFT JOIN Comment c ON p.id = c.post_id
+            LEFT JOIN Author a ON c.author_id = a.id
+            WHERE p.id = #{postId}
+        </select>
         
-        ```java
-        /조회
-         Member findMember = em.find(Member.class, member.getId()); 
-        //참조를 사용해서 연관관계 조회
-         Team findTeam = findMember.getTeam();
-        ```
-        
-        - sql을 통해서 작업해야하는 경우
-        
-        ```java
-        SELECT Team.*
-        FROM Member
-        JOIN Team ON Member.team_id = Team.id
-        WHERE Member.id = 1;
-        ```
-        
-    - 예시 2 객체 그래프 탐색 극대화 사례
-        - 블로그의 경우 작석자, 게시글, 댓글이 있고 엔티티의 연관관계는 아래와 같을 때 특정 게시글에 대한 모든 코멘트를 조회하고 각 코멘트의 저자 정보까지 추출해오는 경우
-        
-        Post → Comment → Author
-        
-        - JPA 그래프 탐색을 활용한경우
-        
-        ```java
-        Post post = entityManager.find(Post.class, postId);
-        System.out.println("Post Title: " + post.getTitle());
-        for(Comment comment : post.getComments()) { // 지연 로딩으로 Comment 조회
-            System.out.println("Comment: " + comment.getText() + ",
-        												Author: " + comment.getAuthor().getName()); // 각 Comment의 Author도 지연 로딩으로 조회
-        }
-        ```
-        
-        - SQL 매퍼 사용시
-        
-        ```sql
-        <mapper namespace="com.example.mapper.PostMapper">
-            <select id="selectPostWithComments" resultMap="PostCommentMap">
-                SELECT p.id as post_id, p.title, p.content, 
-                       c.id as comment_id, c.text, 
-                       a.id as author_id, a.name
-                FROM Post p
-                LEFT JOIN Comment c ON p.id = c.post_id
-                LEFT JOIN Author a ON c.author_id = a.id
-                WHERE p.id = #{postId}
-            </select>
-            
-            <resultMap id="PostCommentMap" type="Post">
-                <id property="id" column="post_id"/>
-                <result property="title" column="title"/>
-                <result property="content" column="content"/>
-                <collection property="comments" ofType="Comment">
-                    <id property="id" column="comment_id"/>
-                    <result property="text" column="text"/>
-                    <association property="author" javaType="Author">
-                        <id property="id" column="author_id"/>
-                        <result property="name" column="name"/>
-                    </association>
-                </collection>
-            </resultMap>
-        </mapper>
-        ```
-        
+        <resultMap id="PostCommentMap" type="Post">
+            <id property="id" column="post_id"/>
+            <result property="title" column="title"/>
+            <result property="content" column="content"/>
+            <collection property="comments" ofType="Comment">
+                <id property="id" column="comment_id"/>
+                <result property="text" column="text"/>
+                <association property="author" javaType="Author">
+                    <id property="id" column="author_id"/>
+                    <result property="name" column="name"/>
+                </association>
+            </collection>
+        </resultMap>
+    </mapper>
+    ```
+    
 
 # 양방향 연관관계
 

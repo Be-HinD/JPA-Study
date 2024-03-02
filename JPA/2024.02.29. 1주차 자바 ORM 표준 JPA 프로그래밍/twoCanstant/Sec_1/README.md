@@ -22,10 +22,10 @@
 
 - CRUD 과정 자체가 SQL, JAVA를 넘나들면서 작업하기 때문에 번거롭다는 단점
     - 자바 객체 —> SQL로 원하는 row추출 —> 잡바객체로 변환하는 과정을 **개발자가 직접 수행**
-- 객체와 관계형 DB의 근본적 차이가 존재한다.
+- 객체와 관계형 DB의 근본적 차이가 존재한다. 객체는 참조 방향성이 있지만 테이블에는 없다.
     - 상속 ←→ 슈퍼 서브 타입
     - 참조 ←→ 외래 키
-    - 데이터 타입
+    - 객체 데이터 타임과 DB 데이터 타입 불일치
     - 데이터 식별 방법…
 - 계층 분할이 어렵다.
 
@@ -55,7 +55,7 @@
     - 객체의 특성을 활용해 작업을 단순화 할 수 있다..
         - 객체 그래프 탐색
     - 버퍼 영역이 생김으로 성능 최적화를 할 수 있다.
-        - 지연로딩, 즉시로등, 캐싱과 같은 작업을 통해 DB 접근을 최소화 할 수 있다.
+        - 지연로딩(해당 엔티티의 모든 멤버에 접근 할 수 있고 내가 필요한 것만 커밋시점에서 db조회를 한다는 뜻), 즉시로등, 캐싱과 같은 작업을 통해 DB 접근을 최소화 할 수 있다.
 - 단점
     - ORM을 끼고하기 때문에 디테일한 쿼리 처리가 힘들다.
     - 자동으로 이식 된 쿼리가 나가기 때문에 쿼리 단 건에 대한 최적화가 힘들다.
@@ -95,14 +95,14 @@
 ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e8dc9b1a-ebd7-4746-8b87-278cc7cc5d56/500d6b24-8399-4a40-af61-a73e1a702922/Untitled.png)
 
 1. MemberDAO : Data Access Object로 repository 구현 클래스를 의미한다.
-    
-    ```java
-    public interface MemberRepository extends JpaRepository<Member, Long> {
-    }
-    ```
-    
-2. JPA가 전달받은 객체(Entity)를 분석하고 적절한 쿼리문 작성함.
-3. JDBC API(Java DataBase Connectivity API)가 때가 되면(Transactional) DB에 연결하고 JPA가 작성한 쿼리를 실행하고 실행 결과를 받아온다.
+
+```java
+public interface MemberRepository extends JpaRepository<Member, Long> {
+}
+```
+
+1. JPA가 전달받은 객체(Entity)를 분석하고 적절한 쿼리문 작성함.
+2. JDBC API(Java DataBase Connectivity API)가 때가 되면(Transactional) DB에 연결하고 JPA가 작성한 쿼리를 실행하고 실행 결과를 받아온다.
 
 ### DB조회
 
