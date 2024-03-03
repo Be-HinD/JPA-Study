@@ -1,0 +1,38 @@
+## 영속성 컨텍스트
+
+- Entity Manager Factory & Entity Manager
+    - Entity Manager Factory에서 Entity Manager 생성
+    - Entity Manager는 내부적으로 DB Connection 사용하여 DB 접근
+    - 한 트랜젝션에 한 Entity Manager에 한 영속성 컨테이너
+- 영속성 컨텍스트 정의
+    - 영속성 컨텍스트는 Entity를 영구 저장하는 환경
+    - persist는 DB 저장하는 메소드가 영속화 의미
+- 영속성 컨텍스트 생명주기
+    - 비영속
+        - 관계가 없는 새로운 상태
+        - 예) persist 전
+    - 영속
+        - 관리되는 상태
+        - 예) persist 후
+    - 준영속
+        - 관리되었다가 분리된 상태
+        - 예) detach 후
+    - 삭제
+        - 삭제된 상태
+        - 예) remove
+- 영속성 컨텍스트 이점
+    - 1차 캐시
+    - 동일성 보장
+    - 쓰기 지연
+    - 변경 감지
+    - 지연 로딩
+- flush
+    - 플러시 ?
+        - 변경 내용을 데이터베이스에 반영
+    - 플러시 발생 시점 ?
+        - flush 메서드로 직접 호출
+        - 커밋할 때 자동 호출 발생
+        - JPQL 쿼리 실행 시 자동 호출
+    - 플러시 발생 후 ?
+        - 영속성 컨텍스트를 비우지 않음
+        - 1차 캐시 비워지지 않음
